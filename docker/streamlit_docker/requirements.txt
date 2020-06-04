@@ -1,0 +1,6 @@
+tensorflow 
+streamlit
+matplotlib
+bokeh
+plotly
+dash

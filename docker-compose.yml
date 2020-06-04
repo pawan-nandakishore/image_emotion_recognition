@@ -1,0 +1,42 @@
+version: '2.3'
+services:
+  notebook:
+    container_name: jupyter-notebook
+    build:
+      context: ./docker/jupyter_docker
+    ports:
+      - "8888:8888"
+     
+    environment: 
+      - NVIDIA_VISIBLE_DEVICES=all
+    runtime: nvidia
+    volumes: 
+      - ./:/local_drive
+    command:  jupyter notebook --allow-root --notebook-dir= local_drive/ --ip=0.0.0.0 --port=8888 --no-browser
+  
+  tensorboard: 
+    build:
+      context: ./docker/tensorboard_docker
+    container_name: tensorboard
+    volumes_from: 
+      - notebook
+    ports:
+      - "6006:6006"
+    command: tensorboard  --port=6006 --logdir=/local_drive/data/logs --host=0.0.0.0
+    runtime: nvidia
+
+  explorer:
+    container_name: streamlit_app
+    build: 
+        context: ./docker/streamlit_docker
+    ports:
+        - "8501:8501"
+    volumes: 
+        - ./:/local_drive
+    runtime: nvidia
+    tty: true
+    environment: 
+      - LC_ALL=C.UTF-8
+      - LANG=C.UTF-8
+    command: streamlit run local_drive/${FILE}
+

@@ -1,0 +1,16 @@
+awscli
+click
+matplotlib
+jupyter
+notebook
+flake8
+black
+tensorflow-gpu
+tensorboard
+ipywidgets==7.5
+jupyter_contrib_nbextensions
+pandas
+plotly
+Pillow
+sklearn
+scipy
