@@ -1,6 +1,5 @@
-FROM nvidia/cuda:10.1-cudnn7-devel-ubuntu18.04
-
-RUN apt-get update && apt-get install -y \
+FROM ubuntu:latest
+RUN apt update && apt install -y \
   git \
   python3.6 \
   python3-pip \
