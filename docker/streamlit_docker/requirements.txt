@@ -4,3 +4,4 @@ matplotlib
 bokeh
 plotly
 dash
+-e
