@@ -17,3 +17,6 @@ ENV NVIDIA_DRIVER_CAPABILITIES compute,utility
 LABEL com.nvidia.volumes.needed="nvidia_driver"
 RUN apt-get update
 RUN jupyter contrib nbextension install 
+RUN apt-get update
+RUN apt-get install -y libsm6 libxext6 libxrender-dev
+RUN pip install opencv-python

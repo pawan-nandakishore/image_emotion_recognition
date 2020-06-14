@@ -2,13 +2,15 @@
 import os 
 import tensorflow as tf
 
+IMG_HEIGHT = 48
+IMG_WIDTH = 48
 
 
 def get_label(file_path):
   # convert the path to a list of path components
     parts = tf.strings.split(file_path, os.path.sep)
   # The second to last is the class-directory
-    label = str(tf.strings.split(parts[-2]," ")[-1])
+    label = tf.strings.split(parts[-2])[-1]
     return label 
 
 def decode_img(img):
@@ -23,6 +25,7 @@ def decode_img(img):
 
 
 def process_path(file_path):
+    print("file path is {}".format(file_path))
     label = get_label(file_path)
   # load the raw data from the file as a string
     img = tf.io.read_file(file_path)
@@ -41,11 +44,34 @@ def load_fer():
     class_ds = tf.data.Dataset.list_files("../data/raw/fer2013/train/*", seed=1)
 
     CLASS_NAMES = [str(x).split('/')[-1].strip("'").split(" ")[-1] for x in list(class_ds.as_numpy_iterator())]
-    IMG_HEIGHT = 32
-    IMG_WIDTH = 32
-
+  
     # Set `num_parallel_calls` so multiple images are loaded/processed in parallel.
     labeled_ds = list_ds.map(process_path, num_parallel_calls=AUTOTUNE)
 
     return labeled_ds
 
+
+
+BATCH_SIZE = 128
+def prepare_for_training(ds, cache=True, shuffle_buffer_size=1000):
+  # This is a small dataset, only load it once, and keep it in memory.
+  # use `.cache(filename)` to cache preprocessing work for datasets that don't
+  # fit in memory.
+  if cache:
+    if isinstance(cache, str):
+      ds = ds.cache(cache)
+    else:
+      ds = ds.cache()
+
+  ds = ds.shuffle(buffer_size=shuffle_buffer_size)
+
+  # Repeat forever
+  ds = ds.repeat()
+
+  ds = ds.batch(BATCH_SIZE)
+
+  # `prefetch` lets the dataset fetch batches in the background while the model
+  # is training.
+  ds = ds.prefetch(buffer_size=AUTOTUNE)
+
+  return ds

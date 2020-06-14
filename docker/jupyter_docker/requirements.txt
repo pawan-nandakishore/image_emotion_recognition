@@ -14,3 +14,4 @@ plotly
 Pillow
 sklearn
 scipy
+tf-explain 
